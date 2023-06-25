@@ -13,7 +13,6 @@ function Login () {
         try {
             const res = await authApi.signIn(tempData)
             toast(`Hello, ${res?.data?.fullname}`, {type: toast.TYPE.SUCCESS})
-            if (res) console.log(res?.data)
             localStorage.setItem('currentAccount', JSON.stringify(res?.data))
             navigate('/homes')
         } catch (err) {

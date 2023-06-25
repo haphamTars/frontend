@@ -1,5 +1,6 @@
 import axiosClient from "./axiosClient";
 
+
 const tagApi = {
   createTag: (params) => {
     const url = `/tag`;
@@ -12,6 +13,14 @@ const tagApi = {
   deleteTag: (tagId) => {
     const url = `tag/${tagId}`
     return axiosClient.delete(url)
+  },
+  import: (formData) => {
+    const url = `/tag/import`
+    return axiosClient.post(url, formData)
+  },
+  updateTag: (params, tagId) => {
+    const url = `/tag/${tagId}`;
+    return axiosClient.put(url, params)
   }
 };
 

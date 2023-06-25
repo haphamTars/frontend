@@ -15,7 +15,6 @@ function Signup () {
         try {
             const res = await authApi.signUp(tempData)
             toast('Successfully Signed Up!', {type: toast.TYPE.SUCCESS})
-            if (res) console.log(res)
             navigate('/login')
         } catch (err) {
             toast("Error! Try again", {type: toast.TYPE.ERROR})

@@ -6,35 +6,36 @@ import BaseLayout from '../../general/layout';
 import AppButton from '../../general/components/appButton';
 import { useEffect, useState } from 'react';
 import roomApi from '../../api/roomApi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import violationApi from '../../api/violationApi';
 import stationApi from '../../api/stationApi';
-import { Pagination } from '@mui/material';
+import { Avatar, Box, Button, Grid, Modal, Pagination, Typography } from '@mui/material';
 
 
 function Violations() {
-    const [showModalCreateRoom, setShowModalCreateRoom] = useState(false)
-    const navigate = useNavigate()
-    const [showModalDeleteRoom, setShowModalDeleteRoom] = useState(false)
-    const [showModalUpdateRoom, setShowModalUpdateRoom] = useState(false)
-    const [selectedRoom, setSelectedRoom] = useState(null)
+
+    
+    const [queryParameters] = useSearchParams();
 
 
     // ==========================
     const [filter, setFilter] = useState({
         startDate: "2023-01-01",
         endDate: '2023-12-12',
-        serialStation: "TDN01",
+        serialStation: queryParameters.get("stationId") ? queryParameters.get("stationId") : "646248403c87fd21a3877d8e",
         page: 1,
-        size: 2
+        size: 10
     });
 
     const [stations, setStations] = useState([]);
+    const [openShowViolationDetail, setOpenShowViolationDetail] = useState(false);
     const [violations, setViolations] = useState([
 
     ]);
+    const [violation, setViolation] = useState(null);
+    
 
     const getStations = async () => {
         try {
@@ -50,6 +51,14 @@ function Violations() {
         getStations()
     }, [])
 
+    useEffect(() => {
+        if(queryParameters.get("stationId")) {
+            handleGetViolations();
+            const addressRedirect = queryParameters.get("staionAddress");
+
+        }
+    }, [])
+
     // useEffect(() => {
     // }, [filter])
 
@@ -63,7 +72,6 @@ function Violations() {
         try {
             const ans = await violationApi.getViolation(filter);
             setViolations(ans.data)
-            console.log(ans);
         } catch (err) {
 
         }
@@ -83,29 +91,14 @@ function Violations() {
         handleGetViolations();
     }, [filter.page])
 
-
-
-    // =================================================================
-
-
-    const currentHome = JSON.parse(localStorage.getItem('currentHome'))
-    const getRoomList = async () => {
-        try {
-            const res = await roomApi.getRoomList(currentHome?.id)
-            setViolations(res?.data?.data);
-            localStorage.setItem('roomList', JSON.stringify(res?.data?.data))
-        } catch (err) {
-
-        }
+    const handleShowViolationDetail = (violation) => {
+        setOpenShowViolationDetail(true);
+        setViolation(violation);
     }
 
-    // useEffect(() => {
-    //     getRoomList()
-    // }, [])
-
-    // useEffect(() => {
-    //     getRoomList()
-    // }, [showModalCreateRoom, showModalDeleteRoom, showModalUpdateRoom])
+    const handleCloseViolationDetail = () => {
+        setOpenShowViolationDetail(false);
+    }
 
     return (
         <BaseLayout selected='violations'>
@@ -166,7 +159,7 @@ function Violations() {
                         }}
                     >
                         {stations.map((station, index) => {
-                            return <option key={index} value={station.serial}>{station.address}</option>
+                            return <option key={index} value={station._id} >{station.address}</option>
                         })}
                     </select>
                 </div>
@@ -194,18 +187,123 @@ function Violations() {
                         {violations?.docs?.map((item, index) => (
                             <tr>
                                 <td>{item?._id}</td>
-                                <td className="text-start">{item?.vehicle?.name} </td>
+                                <td className="text-start">{item?.vehicle?.person.name} </td>
                                 <td className="text-start">{item?.vehicle?.type} </td>
                                 <td className="text-start">{item?.vehicle?.serial} </td>
                                 <td className="text-start">{item?.time} </td>
+                                <td className="text-start">
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+
+                                        }}
+                                        onClick={() => handleShowViolationDetail(item)}
+                                    >
+                                        Chi tiết
+                                    </Button>
+                                </td>
                             </tr>
                         ))}
 
 
                     </tbody>
 
-                    <Pagination count={violations.totalPages} page={filter.page} onChange={handleChangePage} />
                 </Table>
+                    <Pagination count={violations.totalPages} page={filter.page} onChange={handleChangePage} />
+
+                <Modal
+                    open={openShowViolationDetail}
+                    onClose={handleCloseViolationDetail}
+                >
+                    <Box sx={{
+                        width: '600px',
+                        height: '400px',
+                        backgroundColor: '#fff',
+                        position: 'fixed',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)'
+                    }}>
+                        <Typography sx={{
+                            textAlign: 'center',
+                            fontSize: '20px',
+                            fontWeight: '700',
+                            padding: '20px'
+                            }}>
+                                Thông tin chi tiết vi phạm
+                        </Typography>
+                        <Avatar sx={{
+                            margin: "0 auto 20px"
+                        }} src={violation?.vehicle?.person?.img}/>
+
+                        <Box sx={{margin: "0 40px"}}>
+
+                            <Box>
+                                <Box sx={{
+                                    display: 'flex',
+                                }}>
+                                    <Typography>Id vi phạm: </Typography>
+                                    <Typography>{violation?._id}</Typography>
+                                </Box>
+                            </Box>
+                            <Box>
+                                <Box sx={{
+                                    display: 'flex',
+                                }}>
+                                    <Typography>Người vi phạm: </Typography>
+                                    <Typography>{violation?.vehicle?.person?.name}</Typography>
+                                </Box>
+                            </Box>
+                            
+                            <Box>
+                                <Box sx={{
+                                    display: 'flex',
+                                }}>
+                                    <Typography>CCCD/CMND: </Typography>
+                                    <Typography>{violation?.vehicle?.person?.identifier}</Typography>
+                                </Box>
+                            </Box>
+                            
+
+                            <Box>
+                                <Box sx={{
+                                    display: 'flex',
+                                }}>
+                                    <Typography>Ngày sinh: </Typography>
+                                    <Typography>{ violation?.vehicle?.person?.dob}</Typography>
+                                </Box>
+                            </Box>
+
+                            <Box>
+                                <Box sx={{
+                                    display: 'flex',
+                                }}>
+                                    <Typography>Quê quán: </Typography>
+                                    <Typography>{ violation?.vehicle?.person?.address}</Typography>
+                                </Box>
+                            </Box>
+
+                            <Box>
+                                <Box sx={{
+                                    display: 'flex',
+                                }}>
+                                    <Typography>Thời điểm: </Typography>
+                                    <Typography>{ violation?.time}</Typography>
+                                </Box>
+                            </Box>
+
+                            <Box>
+                                <Box sx={{
+                                    display: 'flex',
+                                }}>
+                                    <Typography>Trạm: </Typography>
+                                    <Typography>{ violation?.station?.address}</Typography>
+                                </Box>
+                            </Box>
+                            
+                        </Box>
+                    </Box>
+                </Modal>
             </div>
 
         </BaseLayout>

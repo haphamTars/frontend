@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png"
 import AppButton from "../components/appButton";
 import './style.scss'
-function BaseLayout (props) {
-    const {selected} = props;
+function BaseLayout(props) {
+    const { selected } = props;
     const [selectMenu, setSelectMenu] = useState(selected)
     const navigate = useNavigate()
     return (
         <div className="base-layout d-flex">
             <div className="layout-sidebar d-flex flex-column text-start">
                 <div className="d-flex justify-content-center my-3 pb-3 border-bottom">
-                    <img src={logo} onClick={() => navigate('/homes')} className='my-2' style={{width: '120px', cursor: 'pointer'}} />
+                    <img src={logo} onClick={() => navigate('/homes')} className='my-2' style={{ width: '120px', cursor: 'pointer' }} />
                 </div>
                 <AppButton
-                    className={`d-flex btn-no-bg text-start nav-item ${selectMenu==='dashboard' ? 'selected' : ''}`}
+                    className={`d-flex btn-no-bg text-start nav-item ${selectMenu === 'dashboard' ? 'selected' : ''}`}
                     text='Dashboard'
                     beforeIcon={<i class="fas fa-chart-line me-3"></i>}
                     onClick={() => {
@@ -24,7 +24,7 @@ function BaseLayout (props) {
                 />
 
                 <AppButton
-                    className={`d-flex btn-no-bg text-start nav-item ${selectMenu==='violations' ? 'selected' : ''}`}
+                    className={`d-flex btn-no-bg text-start nav-item ${selectMenu === 'violations' ? 'selected' : ''}`}
                     text='violations'
                     beforeIcon={<i class="fas fa-book me-3"></i>}
                     onClick={() => {
@@ -32,7 +32,7 @@ function BaseLayout (props) {
                         navigate('/violation')
                     }}
                 />
-                
+
                 {/* <AppButton
                     className={`d-flex btn-no-bg text-start nav-item ${selectMenu==='devices' ? 'selected' : ''}`}
                     text='Devices'
@@ -53,14 +53,43 @@ function BaseLayout (props) {
                     }}
                 /> */}
                 <AppButton
-                    className={`d-flex btn-no-bg text-start nav-item ${selectMenu==='users' ? 'selected' : ''}`}
+                    className={`d-flex btn-no-bg text-start nav-item ${selectMenu === 'users' ? 'selected' : ''}`}
                     text='Tags'
-                    beforeIcon={<i class="fas fa-users me-3"></i>}
+                    beforeIcon={<i class="fas fa-hashtag me-3"></i>}
                     onClick={() => {
                         navigate('/users')
                         setSelectMenu('users')
                     }}
                 />
+                <AppButton
+                    className={`d-flex btn-no-bg text-start nav-item ${selectMenu === 'station' ? 'selected' : ''}`}
+                    text='Station'
+                    beforeIcon={<i class="fas fa-light fa-tower-observation me-3"></i>}
+                    onClick={() => {
+                        navigate('/station')
+                        setSelectMenu('station')
+                    }}
+                />
+                <AppButton
+                    className={`d-flex btn-no-bg text-start nav-item ${selectMenu === 'person' ? 'selected' : ''}`}
+                    text='Person'
+                    beforeIcon={<i class="fas fa-users me-3"></i>}
+                    onClick={() => {
+                        navigate('/person')
+                        setSelectMenu('person')
+                    }}
+                />
+
+                <AppButton
+                    className={`d-flex btn-no-bg text-start nav-item ${selectMenu === 'vehicle' ? 'selected' : ''}`}
+                    text='Vehicle'
+                    beforeIcon={<i class="fas fa-car me-3"></i>}
+                    onClick={() => {
+                        navigate('/vehicle')
+                        setSelectMenu('vehicle')
+                    }}
+                />
+
                 <div className="logout-item">
                     <AppButton
                         className={`d-flex btn-no-bg text-start nav-item`}
@@ -70,7 +99,8 @@ function BaseLayout (props) {
                         onClick={() => navigate('/login')}
                     />
                 </div>
-                
+
+
 
             </div>
             <div className="layout-children">

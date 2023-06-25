@@ -1,48 +1,49 @@
 import { useEffect, useState } from "react";
 import { Form, InputGroup, Table } from "react-bootstrap";
-import tagApi from "../../api/tagApi";
+import vehicleApi from "../../api/vehicleApi";
 import AppButton from "../../general/components/appButton";
 import ModalDeleteConfirm from "../../general/components/modalDeleteConfirm";
 import BaseLayout from "../../general/layout";
-import ModalCreateTag from "./modalCreateTag";
-import ModalUpdateTag from "./modalUpdateTag";
+import ModalCreateVehicle from "./modalCreateVehicle";
+// import ModalUpdateVehicle from "./modalUpdateVehicle";
 import { toast } from "react-toastify";
 
 
-function Tags(props) {
+function Vehicles(props) {
     const [showModalCreateUser, setShowModalCreateUser] = useState(false)
     const [showModalDeleteUser, setShowModalDeleteUser] = useState(false)
-    const [showModalUpdateTag, setShowModalUpdateTag] = useState(false)
-    const [updateTag, setUpdateTag] = useState(null)
-    const [tags, setTags] = useState([]);
-    const [deleteTagId, setDeleteTagId] = useState('');
+    const [showModalUpdateVehicle, setShowModalUpdateVehicle] = useState(false)
+    const [updateVehicle, setUpdateVehicle] = useState(null)
+    const [vehicles, setVehicles] = useState([]);
+    const [deleteVehicleId, setDeleteVehicleId] = useState('');
 
-    const handleGetTags = async () => {
+    const handleGetVehicles = async () => {
         try {
-            const ans = await tagApi.getTags();
-            setTags(ans.data);
+            const ans = await vehicleApi.getVehicles();
+            setVehicles(ans.data);
+            console.log(ans)
         } catch (error) {
 
         }
     }
 
-    const handleDeleteTag = async (tagId) => {
+    const handleDeleteVehicle = async (vehicleId) => {
         try {
-            const ans = await tagApi.deleteTag(tagId);
+            const ans = await vehicleApi.deleteVehicle(vehicleId);
         } catch (error) {
 
         }
     }
 
     useEffect(() => {
-        handleGetTags();
+        handleGetVehicles();
     }, [])
 
     useEffect(() => {
-    }, [updateTag])
+    }, [updateVehicle])
 
     return (
-        <BaseLayout selected='users'>
+        <BaseLayout selected='vehicle'>
             <div className="dashboard users-screen devices-screen">
                 <div className='d-flex mb-1'>
                     <InputGroup className='w-50'>
@@ -54,7 +55,7 @@ function Tags(props) {
                 </div>
 
                 <AppButton
-                    text='Add Tag'
+                    text='Add Vehicle'
                     beforeIcon={<i class="fas fa-plus me-2"></i>}
                     className='btn-viewall d-flex mt-3'
                     onClick={() => setShowModalCreateUser(true)}
@@ -64,27 +65,30 @@ function Tags(props) {
                     <thead className="text-center">
                         <tr>
                             <th>ID</th>
-                            <th>IsActive</th>
+                            <th>Type</th>
                             <th>Serial</th>
+                            <th>Owner Name</th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {tags?.map((item, index) => (
+                        {vehicles?.map((item, index) => (
                             <tr>
                                 <td>{index + 1}</td>
-                                <td className="">{item?.isActive ? 'Active' : 'Inactive'} </td>
                                 <td>
-                                    {item?.tagSerial}
+                                    {item?.type}
                                 </td>
-                                <td className="">
+                                <td>{item?.serial} </td>
+                                <td>{item?.person?.name} </td>
+                                <td className="text-center">
                                     <i className="fas fa-pencil-alt" onClick={(e) => {
-                                        setShowModalUpdateTag(true)
-                                        setUpdateTag(item)
+                                        setShowModalUpdateVehicle(true)
+                                        setUpdateVehicle(item)
                                     }}></i>
                                     <i className="fas fa-trash-alt ms-3" onClick={() => {
-                                        setDeleteTagId(item._id);
+                                        setDeleteVehicleId(item._id);
                                         setShowModalDeleteUser(true)
                                     }}></i>
                                 </td>
@@ -98,29 +102,29 @@ function Tags(props) {
 
 
 
-            <ModalCreateTag
+            <ModalCreateVehicle
                 show={showModalCreateUser}
-                handleGetTags={handleGetTags}
+                handleGetVehicles={handleGetVehicles}
                 onHide={() => setShowModalCreateUser(false)}
             />
 
-            {showModalUpdateTag ? <ModalUpdateTag
-                show={showModalUpdateTag}
-                tag={updateTag}
-                handleGetTags={handleGetTags}
-                onHide={() => setShowModalUpdateTag(false)}
-            /> : null}
+            {/* {showModalUpdateVehicle ? <ModalUpdateVehicle
+                show={showModalUpdateVehicle}
+                vehicle={updateVehicle}
+                handleGetVehicles={handleGetVehicles}
+                onHide={() => setShowModalUpdateVehicle(false)}
+            /> : null}  */}
 
             <ModalDeleteConfirm
                 show={showModalDeleteUser}
                 onHide={() => { setShowModalDeleteUser(false) }}
-                handleDeleteSubmit={handleDeleteTag}
-                id={deleteTagId}
-                handleGetTags={handleGetTags}
+                handleDeleteSubmit={handleDeleteVehicle}
+                id={deleteVehicleId}
+                handleGetVehicles={handleGetVehicles}
                 title="Bạn có chắc chắn muốn xóa người dùng này?"
             />
         </BaseLayout>
     )
 }
 
-export default Tags;
+export default Vehicles;

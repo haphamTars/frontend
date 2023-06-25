@@ -19,7 +19,6 @@ function Users (props) {
     const handleGetTags = async () => {
         try {
             const ans = await tagApi.getTags();
-            console.log(ans)
             setTags(ans.data);
         } catch (error) {
             
@@ -29,7 +28,6 @@ function Users (props) {
     const handleDeleteTag = async (tagId) => {
         try {
             const ans = await tagApi.deleteTag(tagId);
-            console.log(ans)
         } catch (error) {
             
         }

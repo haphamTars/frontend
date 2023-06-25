@@ -16,7 +16,6 @@ function Dashboard () {
     const getCurrentAnalytic = async () => {
         try {
             const res = await homeApi.getCurrentAnalytic()
-            console.log(res)
             setCurrentAnalytic(res?.data?.data)
         } catch (err) {
 

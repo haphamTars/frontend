@@ -12,7 +12,6 @@
 }
 
 .filter-wrapper {
-    display: flex;
     padding: 20px 0;
     .filter-date {
         padding: 4px;
@@ -20,16 +19,9 @@
         border-radius: 2px;
     }
     
-    > * {
-        margin: 10px;
-    }
 }
 
-.MuiPagination-root ul {
-    display: flex;
-    justify-content: center;
-}
-
-button {
-    border-radius: 0 !important;
+form {
+    margin-top: 30px;
+    margin-bottom: 30px;
 }

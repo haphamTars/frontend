@@ -1,24 +1,27 @@
 import { useState } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 import userApi from "../../../api/userApi";
-import tagApi from "../../../api/tagApi";
+import vehicleApi from "../../../api/vehicleApi";
 import { toast } from "react-toastify";
 
-function ModalCreateTag(props) {
+function ModalCreateVehicle(props) {
     const { show, onHide } = props
-    const [tag, setTag] = useState({
-        tag: {
-            isActive: false,
-            tagSerial: ''
+    const [vehicle, setVehicle] = useState({
+        vehicle: {
+            // _id: '',
+            // person: '',
+            // type: '',
+            // tag: '',
+            // serial: '',
         }
     })
     const currentHome = JSON.parse(localStorage.getItem('currentHome'))
     const handleChange = (e) => {
-        setTag( prev => {
+        setVehicle(prev => {
             return {
                 ...prev,
-                tag: {
-                    ...prev.tag,
+                vehicle: {
+                    ...prev.vehicle,
                     [e.target.name]: e.target.value
                 }
             }
@@ -27,9 +30,9 @@ function ModalCreateTag(props) {
 
     const handleCreateSubmit = async () => {
         try {
-            const res = await tagApi.createTag(tag)
-            props.handleGetTags();
-            toast('Successfully Created new tag', { type: toast.TYPE.SUCCESS })
+            const res = await vehicleApi.createVehicle(vehicle)
+            props.handleGetVehicles();
+            toast('Successfully Created new vehicle', { type: toast.TYPE.SUCCESS })
             onHide()
         } catch (err) {
             toast('Error! Try again', { type: toast.TYPE.ERROR })
@@ -41,26 +44,36 @@ function ModalCreateTag(props) {
         <Modal show={show} onHide={onHide}>
             <Modal.Header className='px-5 py-3 d-flex align-items-center justify-content-center'>
                 <Modal.Title className='modal-title'>
-                    Create New Tag
+                    Create New Vehicle
                 </Modal.Title>
             </Modal.Header>
 
             <Modal.Body className='bg-light modal-content'>
                 <Form>
                     <Form.Group as={Row}>
-                        <Form.Label column sm="3"> IsActive </Form.Label>
+                        <Form.Label column sm="3">Owner Identifier </Form.Label>
                         <Col sm="9">
-                            <Form.Select name="isActive" aria-label="Default select example" onChange={(e) => handleChange(e)}>
-                                <option>Choose isActive</option>
-                                <option value="true">True</option>
-                                <option value="false">False</option>
-                            </Form.Select>
+                            <Form.Control type='text' name="person" onChange={(e) => handleChange(e)} />
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mt-3">
+                        <Form.Label column sm="3"> Vehicle Serial </Form.Label>
+                        <Col sm="9">
+                            <Form.Control type='text' name="serial" onChange={(e) => handleChange(e)} />
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="mt-3">
+                        <Form.Label column sm="3"> Vehicle Type </Form.Label>
+                        <Col sm="9">
+                            <Form.Control type='text' name="type" onChange={(e) => handleChange(e)} />
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="mt-3">
                         <Form.Label column sm="3"> Tag Serial </Form.Label>
                         <Col sm="9">
-                            <Form.Control type='text' name="tagSerial" onChange={(e) => handleChange(e)} />
+                            <Form.Control type='text' name="tag" onChange={(e) => handleChange(e)} />
                         </Col>
                     </Form.Group>
                 </Form>
@@ -74,4 +87,4 @@ function ModalCreateTag(props) {
     )
 }
 
-export default ModalCreateTag;
+export default ModalCreateVehicle;
